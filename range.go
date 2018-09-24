@@ -29,4 +29,11 @@ func main()  {
 	for i, c := range "go" {
 		fmt.Println(i, c)
 	}
+
+	//range创建了每个元素的副本，而不是直接返回对该元素的引用
+	slice := []int{10, 20, 30, 40}
+	for index, value := range slice {
+		fmt.Printf("Value: %d Value-Addr: %X ElemAddr: %X\n",
+			value, &value, &slice[index])
+	}
 }
