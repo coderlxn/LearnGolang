@@ -12,6 +12,7 @@ func main() {
 	c := make(chan int)
 	go func() {
 		for i := 0; i < 10; i = i + 1 {
+			fmt.Println("return a value ", i)
 			c <- i
 		}
 		close(c)

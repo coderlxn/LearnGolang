@@ -16,6 +16,7 @@ func main()  {
 	go sum(a[:len(a)/2], result)
 	go sum(a[len(a)/2:], result)
 	x, y := <-result, <-result
+	//another := <-result
 
 	fmt.Println(x, y, x+y)
 }
