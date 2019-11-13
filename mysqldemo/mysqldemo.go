@@ -13,19 +13,21 @@ func main()  {
 
 	if err = db.Ping(); err != nil {
 		fmt.Println(err.Error())
+	} else {
+		fmt.Println("Ping success")
 	}
 
-	stmtIns, err := db.Prepare("INSERT INTO godemo VALUES (?, ?)")  // ? = placeholder
-	if err != nil {
-		panic(err.Error())
-	}
-	defer stmtIns.Close()
-
-	stmtOut, err := db.Prepare("SELECT squareNumber from godemo WHERE number = ?")
-	if err != nil {
-		panic(err.Error())
-	}
-	defer stmtOut.Close()
+	//stmtIns, err := db.Prepare("INSERT INTO godemo VALUES (?, ?)")  // ? = placeholder
+	//if err != nil {
+	//	panic(err.Error())
+	//}
+	//defer stmtIns.Close()
+	//
+	//stmtOut, err := db.Prepare("SELECT squareNumber from godemo WHERE number = ?")
+	//if err != nil {
+	//	panic(err.Error())
+	//}
+	//defer stmtOut.Close()
 
 	//for i := 0; i < 25; i++ {
 	//	_, err = stmtIns.Exec(i, i * i)
@@ -34,16 +36,16 @@ func main()  {
 	//	}
 	//}
 
-	var squareNum int  // 存储查询结果
-	err = stmtOut.QueryRow(13).Scan(&squareNum)
-	if err != nil {
-		panic(err.Error())
-	}
-	fmt.Printf("The square number of 13 is: %d\n", squareNum)
-
-	err = stmtOut.QueryRow(1).Scan(&squareNum)
-	if err != nil {
-		panic(err.Error())
-	}
-	fmt.Printf("The square number of 1 is: %d", squareNum)
+	//var squareNum int  // 存储查询结果
+	//err = stmtOut.QueryRow(13).Scan(&squareNum)
+	//if err != nil {
+	//	panic(err.Error())
+	//}
+	//fmt.Printf("The square number of 13 is: %d\n", squareNum)
+	//
+	//err = stmtOut.QueryRow(1).Scan(&squareNum)
+	//if err != nil {
+	//	panic(err.Error())
+	//}
+	//fmt.Printf("The square number of 1 is: %d", squareNum)
 }
