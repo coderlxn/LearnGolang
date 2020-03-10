@@ -5,6 +5,12 @@ import (
 	"sync"
 )
 
+var globalSessions *session.Manager
+
+func init() {
+	globalSessions, _ = NewManager("memory", "gosessionid", 3600)
+}
+
 var provides = make(map[string]Provider)
 
 type Session interface {
