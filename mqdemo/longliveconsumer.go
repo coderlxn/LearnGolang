@@ -17,6 +17,7 @@ var (
 	consumerTag  = flag.String("consumer-tag", "simple-consumer", "AMQP consumer tag (should not be blank)")
 	lifetime     = flag.Duration("lifetime", 5* time.Second, "lifetime of process before shutdown (0s=infinite)")
 )
+var forever chan bool
 
 func init()  {
 	flag.Parse()
@@ -63,8 +64,8 @@ func NewConsumer(amqpURI, exchange, exchangeType, queueName, key, ctag string) (
 		false,
 		false,
 		nil,
-		); err != nil {
-			return nil, fmt.Errorf("exchange Declare: %s", err)
+	); err != nil {
+		return nil, fmt.Errorf("exchange Declare: %s", err)
 	}
 
 	log.Printf("declared Exchange, declaring Queue %q", queueName)
@@ -87,7 +88,7 @@ func NewConsumer(amqpURI, exchange, exchangeType, queueName, key, ctag string) (
 		exchange,
 		false,
 		nil); err != nil {
-			return nil, fmt.Errorf("queue Bind: %s", err)
+		return nil, fmt.Errorf("queue Bind: %s", err)
 	}
 
 	log.Printf("Queue bind to Exchanged, starting Consume (consumer tag %q)", c.tag)
@@ -127,26 +128,34 @@ func handle(deliveries <-chan amqp.Delivery, done chan error)  {
 		d.Ack(false)
 	}
 	log.Printf("handel: deliveries channel closed")
+	forever <- true
+	log.Printf("handel: assign forever value")
 	done <- nil
+	log.Printf("handel: finished")
 }
 
 func main()  {
-	c, err := NewConsumer(*uri, *exchange, *exchangeType, *queue, *bindingKey, *consumerTag)
+	_, err := NewConsumer(*uri, *exchange, *exchangeType, *queue, *bindingKey, *consumerTag)
 	if err != nil {
 		log.Fatal("%s", err)
 	}
 
-	if *lifetime > 0 {
-		log.Printf("running for %s", *lifetime)
-		time.Sleep(*lifetime)
-	} else {
-		log.Printf("running forever")
-		select {
+	forever = make(chan bool)
 
-		}
-	}
-	log.Printf("shutting down")
-	if err := c.Shutdown(); err != nil {
-		log.Fatal("error during shutdown: %s", err)
-	}
+
+	log.Println("program exited with: ", <- forever)
+
+	//if *lifetime > 0 {
+	//	log.Printf("running for %s", *lifetime)
+	//	time.Sleep(*lifetime)
+	//} else {
+	//	log.Printf("running forever")
+	//	select {
+	//
+	//	}
+	//}
+	//log.Printf("shutting down")
+	//if err := c.Shutdown(); err != nil {
+	//	log.Fatal("error during shutdown: %s", err)
+	//}
 }
