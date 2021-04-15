@@ -3,12 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/labstack/gommon/log"
+	"log"
 	"github.com/streadway/amqp"
 )
 
 var (
-	uri = flag.String("uri", "amqp://guest:guest@localhost:5672/", "AMQP URI")
+	uri = flag.String("uri", "amqp://appmaker:maker123@192.168.1.121:5672/", "AMQP URI")
 	exchangeName = flag.String("exchange", "test-exchange", "Durable AMQP exchange name")
 	exchangeType = flag.String("exchange-type", "direct", "Exchange type - direct|fanout|topic|x-custom")
 	routingKey   = flag.String("key", "test-key", "AMQP routing key")

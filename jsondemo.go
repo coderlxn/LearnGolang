@@ -33,6 +33,19 @@ type QueryResult struct {
 	OriginQuery             OriginQuery `json:"originQuery"`
 }
 
+type MessageRequest struct {
+	Sender		string	`json:"sender"`
+	Uuid		string	`json:"responseId"`
+	AppID		string  `json:"appid"`		//Agent要和token相互匹配，每次都要对请求进行校验
+	Token		string	`json:"token"`
+	Text		string	`json:"text"`
+	Type		string	`json:"type"`		//请求的类型 text event
+	Language	string	`json:"language"`
+	InTime		int		`json:"intime"`		//请求进入的时候，用于计量整个请求的响应时间
+	Domain		string	`json:"domain"`
+	Result		[] map[string]interface{} `json:"fulfillmentMessages"` //Rasa的处理结果，转换为fulfillmentMessages
+}
+
 func main()  {
 	/*
 	在将json字符串拆解成结构体时，json key与目标结构体不必一一对应，可以多一些或者少一些
@@ -47,7 +60,7 @@ func main()  {
 
 	val := `{
   "responseId": "7ce0fcb1-2a3b-43c8-b1a6-248ca25ff7e3-712767ed",
-  "queryResult": {
+
     "queryText": "tell me about you",
     "action": "smalltalk.agent.acquaintance_abc",
     "parameters": {
@@ -109,8 +122,13 @@ func main()  {
     },
     "intentDetectionConfidence": 1,
     "languageCode": "en"
-  }
 }`
+
+	var obj  MessageRequest
+	err = json.Unmarshal([]byte(val), &obj)
+	if err != nil {
+		panic(err.Error())
+	}
 
 	queryResult := QueryResult{ResponseID:"xxxxxx", Language:"zh",
 		IntentInfo:  IntentInfo{Name:"Intent Name", Uuid:"xxxxxxxxx", Action:"action.intent.name", Confidence:0.58,
